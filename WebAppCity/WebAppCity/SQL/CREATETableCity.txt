@@ -1,0 +1,8 @@
+CREATE TABLE "City" (
+	"ID"	INTEGER NOT NULL UNIQUE,
+	"Mayor"	TEXT,
+	"Year"	TEXT,
+	"Country"	TEXT,
+	"Population"	TEXT,
+	PRIMARY KEY("ID" AUTOINCREMENT)
+);

@@ -1,0 +1,4 @@
+INSERT INTO City (Mayor,Year,Country,Population)
+VALUES
+("Ivan Jurković","2008","Španjolska","47 million"),
+("Petar Petričeviić","2011","Francuska","48 million")
