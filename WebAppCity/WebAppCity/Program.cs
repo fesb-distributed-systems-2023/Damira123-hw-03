@@ -9,7 +9,7 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
-builder.Services.AddSingleton<CityRepository>();
+builder.Services.AddSingleton<ICityRepository, CityRepository_SQL>();
 
 var app = builder.Build();
 

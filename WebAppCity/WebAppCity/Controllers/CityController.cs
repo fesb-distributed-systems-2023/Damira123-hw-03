@@ -27,25 +27,18 @@ namespace WebAppCity.Controllers
    [ApiController]
    public class CityController : ControllerBase
    {
-        private readonly CityRepository _cityRepository;
+        private readonly ICityRepository _cityRepository;
 
-        public CityController(CityRepository cityRepository)
+        public CityController(ICityRepository cityRepository)
         {
             _cityRepository = cityRepository;
         }
         [HttpPost("/cities/new")]
         public IActionResult CreateNewCity([FromBody] City city)
         {
-            bool fSuccess = _cityRepository.CreateNewCity(city);
+             _cityRepository.CreateNewCity(city);
 
-            if (fSuccess)
-            {
-                return Ok("New city created!");
-            }
-            else
-            {
-                return BadRequest("Something went wrong!");
-            }
+            return Ok();
         }
         [HttpGet("/cities/all")]
         public IActionResult GetAllCity()
@@ -69,14 +62,27 @@ namespace WebAppCity.Controllers
         [HttpDelete("/cities/{id}")]
         public IActionResult DeleteCity([FromRoute] int id)
         {
-            if (_cityRepository.DeleteCity(id))
+            _cityRepository.DeleteCity(id);
+            return Ok();
+        }
+
+        [HttpPut("/cities/{id}")]
+        public ActionResult UpdatedCity(int id, [FromBody] City updatedCity)
+        {
+            if (updatedCity == null)
             {
-                return Ok($"Deleted city with id={id}!");
+                return BadRequest();
             }
-            else
+
+            var existingCity = _cityRepository.GetSingCity(id);
+            if (existingCity == null)
             {
-                return NotFound($"Could not find city with id={id}!");
+                return NotFound();
             }
+
+            _cityRepository.UpdateCity(id, updatedCity);
+
+            return Ok();
         }
     }
 }

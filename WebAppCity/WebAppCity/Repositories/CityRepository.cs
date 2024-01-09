@@ -19,7 +19,7 @@ using WebAppCity.Models.Domain;
 
 namespace WebAppCity.Repositories
 {
-    public class CityRepository
+    public class CityRepository : ICityRepository
     {
         // List of all cities
         private List<City> m_lstCities;
@@ -30,15 +30,13 @@ namespace WebAppCity.Repositories
             m_lstCities = new List<City>();
         }
         // CREATE : Create new city
-        public bool CreateNewCity(City city)
+        public void CreateNewCity(City city)
         {
             // Adding new city to the list
             m_lstCities.Add(city);
-
-            return true;
         }
         // READ : Get all cities
-        public IEnumerable<City> GetAllCities()
+        public List<City> GetAllCities()
         {
             // Returns entire list 
             return m_lstCities;
@@ -58,19 +56,38 @@ namespace WebAppCity.Repositories
             return city;
         }
         // DELETE : Delete city (specified by ID)
-        public bool DeleteCity(int id)
+        public void DeleteCity(int id)
         {
-            // Check if city matches ID
-            var cityToDelete = m_lstCities.FirstOrDefault(itemCity => itemCity.Id == id);
-            if (cityToDelete == null)
+            City? cityToRemove = GetSingCity(id);
+            if (cityToRemove != null)
             {
-                return false;
+                m_lstCities.Remove(cityToRemove);
             }
-
-            m_lstCities.Remove(cityToDelete);
-
-            return true;
+            else
+            {
+                throw new KeyNotFoundException($"City with ID '{id}' not found.");
+            }
         }
 
+        public void UpdateCity(int id, City updatedCity)
+        {
+
+            City? existingCity = GetSingCity(id);
+            if (existingCity is not null)
+            {
+                // Update only if the user has permission
+                // Implement access control logic as needed
+                existingCity.Mayor = updatedCity.Mayor;
+                existingCity.Year = updatedCity.Year;
+                existingCity.Country = updatedCity.Country;
+                existingCity.Population = updatedCity.Population;
+                existingCity.Monuments = updatedCity.Monuments;
+            }
+            else
+            {
+                throw new KeyNotFoundException($"City with ID '{id}' not found.");
+            }
+
+        }
     }
 }
