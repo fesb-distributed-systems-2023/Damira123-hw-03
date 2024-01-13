@@ -1,0 +1,2 @@
+DELETE FROM City WHERE Mayor = "Ivan Jurković";
+DELETE FROM City WHERE Year = "2000"

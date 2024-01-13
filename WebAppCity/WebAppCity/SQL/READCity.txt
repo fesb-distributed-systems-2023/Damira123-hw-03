@@ -1,0 +1,1 @@
+SELECT ID,Mayor,Year,Country,Population FROM City WHERE Year = "1967"

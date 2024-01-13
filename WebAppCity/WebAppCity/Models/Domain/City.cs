@@ -22,13 +22,13 @@ namespace WebAppCity.Models.Domain
         public string? Mayor { get; set; }
 
         //Godina nastanka grada
-        public string? Year { get; set; }
+        public int? Year { get; set; }
 
         //Država u kojoj se nalazi
         public string? Country { get; set; }
 
        // broj stanovništva
-        public int Populacion { get; set; }
+        public int Population { get; set; }
 
         // lista znamenitosti grada
         public List<string>? Monuments { get; set; }
