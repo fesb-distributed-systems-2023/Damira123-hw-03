@@ -18,6 +18,7 @@
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebAppCity.Controllers.DTO;
 using WebAppCity.Filters;
 using WebAppCity.Models.Domain;
 using WebAppCity.Repositories;
@@ -35,19 +36,24 @@ namespace WebAppCity.Controllers
             _cityRepository = cityRepository;
         }
         [HttpPost("/cities/new")]
-        public IActionResult CreateNewCity([FromBody] City city)
+        public ActionResult Post([FromBody] NewCityDTO city)
         {
-             _cityRepository.CreateNewCity(city);
+            if (city == null)
+            {
+                return BadRequest($"Wrong city format!");
+            }
 
+            _cityRepository.CreateNewCity(city.ToModel());
             return Ok();
         }
         [HttpGet("/cities/all")]
-        public IActionResult GetAllCity()
+        public ActionResult<IEnumerable<CityInfoDTO>> GetAllCity()
         {
+            var allCities = _cityRepository.GetAllCities().Select(x => CityInfoDTO.FromModel(x));
             return Ok(_cityRepository.GetAllCities());
         }
         [HttpGet("/cities/{id}")]
-        public IActionResult GetSingleCity([FromRoute] int id)
+        public ActionResult<CityInfoDTO> GetSingleCity(int id)
         {
             var city = _cityRepository.GetSingCity(id);
 
@@ -57,18 +63,18 @@ namespace WebAppCity.Controllers
             }
             else
             {
-                return Ok(city);
+                return Ok(CityInfoDTO.FromModel(city));
             }
         }
         [HttpDelete("/cities/{id}")]
-        public IActionResult DeleteCity([FromRoute] int id)
+        public IActionResult DeleteCity( int id)
         {
             _cityRepository.DeleteCity(id);
             return Ok();
         }
 
         [HttpPut("/cities/{id}")]
-        public ActionResult UpdatedCity(int id, [FromBody] City updatedCity)
+        public ActionResult UpdatedCity(int id, [FromBody] NewCityDTO updatedCity)
         {
             if (updatedCity == null)
             {
@@ -81,7 +87,7 @@ namespace WebAppCity.Controllers
                 return NotFound();
             }
 
-            _cityRepository.UpdateCity(id, updatedCity);
+            _cityRepository.UpdateCity(id, updatedCity.ToModel());
 
             return Ok();
         }

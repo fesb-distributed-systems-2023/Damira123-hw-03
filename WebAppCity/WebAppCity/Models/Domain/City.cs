@@ -22,7 +22,7 @@ namespace WebAppCity.Models.Domain
         public string? Mayor { get; set; }
 
         //Godina nastanka grada
-        public int? Year { get; set; }
+        public int Year { get; set; }
 
         //Država u kojoj se nalazi
         public string? Country { get; set; }
