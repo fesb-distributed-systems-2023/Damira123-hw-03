@@ -18,13 +18,14 @@
 
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using WebAppCity.Filters;
 using WebAppCity.Models.Domain;
 using WebAppCity.Repositories;
 
 namespace WebAppCity.Controllers
 {
-
-   [ApiController]
+    [LogFilter]
+    [ApiController]
    public class CityController : ControllerBase
    {
         private readonly ICityRepository _cityRepository;
