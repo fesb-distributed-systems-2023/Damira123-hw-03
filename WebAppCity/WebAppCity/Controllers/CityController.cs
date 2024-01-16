@@ -20,6 +20,7 @@ using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
 using WebAppCity.Controllers.DTO;
 using WebAppCity.Filters;
+using WebAppCity.Logic;
 using WebAppCity.Models.Domain;
 using WebAppCity.Repositories;
 
@@ -29,11 +30,11 @@ namespace WebAppCity.Controllers
     [ApiController]
    public class CityController : ControllerBase
    {
-        private readonly ICityRepository _cityRepository;
+        private readonly ICityLogic _cityLogic;
 
-        public CityController(ICityRepository cityRepository)
+        public CityController(ICityLogic cityLogic)
         {
-            _cityRepository = cityRepository;
+            _cityLogic = cityLogic;
         }
         [HttpPost("/cities/new")]
         public ActionResult Post([FromBody] NewCityDTO city)
@@ -43,19 +44,19 @@ namespace WebAppCity.Controllers
                 return BadRequest($"Wrong city format!");
             }
 
-            _cityRepository.CreateNewCity(city.ToModel());
+            _cityLogic.CreateNewCity(city.ToModel());
             return Ok();
         }
         [HttpGet("/cities/all")]
         public ActionResult<IEnumerable<CityInfoDTO>> GetAllCity()
         {
-            var allCities = _cityRepository.GetAllCities().Select(x => CityInfoDTO.FromModel(x));
-            return Ok(_cityRepository.GetAllCities());
+            var allCities = _cityLogic.GetAllCities().Select(x => CityInfoDTO.FromModel(x));
+            return Ok(_cityLogic.GetAllCities());
         }
         [HttpGet("/cities/{id}")]
         public ActionResult<CityInfoDTO> GetSingleCity(int id)
         {
-            var city = _cityRepository.GetSingCity(id);
+            var city = _cityLogic.GetSingleCity(id);
 
             if (city is null)
             {
@@ -69,7 +70,7 @@ namespace WebAppCity.Controllers
         [HttpDelete("/cities/{id}")]
         public IActionResult DeleteCity( int id)
         {
-            _cityRepository.DeleteCity(id);
+            _cityLogic.DeleteCity(id);
             return Ok();
         }
 
@@ -81,13 +82,13 @@ namespace WebAppCity.Controllers
                 return BadRequest();
             }
 
-            var existingCity = _cityRepository.GetSingCity(id);
+            var existingCity = _cityLogic.GetSingleCity(id);
             if (existingCity == null)
             {
                 return NotFound();
             }
 
-            _cityRepository.UpdateCity(id, updatedCity.ToModel());
+            _cityLogic.UpdateCity(id, updatedCity.ToModel());
 
             return Ok();
         }

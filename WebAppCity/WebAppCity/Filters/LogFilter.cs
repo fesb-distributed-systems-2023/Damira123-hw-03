@@ -1,6 +1,7 @@
 ﻿using Microsoft.AspNetCore.Mvc.Filters;
 using Microsoft.AspNetCore.Mvc;
 using System.Net;
+using WebAppCity.Exceptions;
 
 namespace WebAppCity.Filters
 {
@@ -14,12 +15,33 @@ namespace WebAppCity.Filters
             {
                 Console.WriteLine($"ERROR: {context.Exception.Message}");
                 context.ExceptionHandled = true;
+                // This is a security feature that only passes custom exception
+                // type (UserErrorMessage) to the user. If any other exception
+                // makes it here, it will not be sent to the user, instead,
+                // the user will get a generic error message ("Web API encountered an error!")
+                // This prevents hackers to gather information about the internals
+                // of our application
+                string errorMessage;
+                int statusCode;
+                if (context.Exception.GetType() == typeof(UserErrorMessage))
+                {
+                    // User error
+                    statusCode = (int)HttpStatusCode.BadRequest;
+                    errorMessage = context.Exception.Message;
+                }
+                else
+                {
+                    // Server error
+                    statusCode = (int)HttpStatusCode.InternalServerError;
+                    errorMessage = "Web API encountered an error!";
+                }
 
+                // Create the error message
                 context.Result = new ContentResult
                 {
-                    StatusCode = (int)HttpStatusCode.InternalServerError,
+                    StatusCode = statusCode,
                     ContentType = "application/text",
-                    Content = "Web API encountered an error!",
+                    Content = errorMessage,
                 };
             }
 

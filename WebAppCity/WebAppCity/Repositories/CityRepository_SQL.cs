@@ -1,11 +1,19 @@
 ﻿using Microsoft.Data.Sqlite;
+using Microsoft.Extensions.Options;
+using WebAppCity.Configuration;
 using WebAppCity.Models.Domain;
 
 namespace WebAppCity.Repositories
 {
     public class CityRepository_SQL : ICityRepository
     {
-        private readonly string _connectionString = "Data Source=C:\\Users\\DELL\\OneDrive\\Radna površina\\dm3\\damira123-hw-03\\WebAppCity\\WebAppCity\\SQL\\sql.db";
+        private readonly string _connectionString;
+
+        public CityRepository_SQL(IOptions<DBConfiguration> configuration)
+        {
+            _connectionString = configuration.Value.ConnectionDB;
+        }
+
         public void CreateNewCity(City city)
         {
             using var connection = new SqliteConnection(_connectionString);
