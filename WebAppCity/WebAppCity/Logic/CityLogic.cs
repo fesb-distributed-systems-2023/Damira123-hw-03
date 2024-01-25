@@ -10,12 +10,12 @@ namespace WebAppCity.Logic
     public class CityLogic : ICityLogic
     {
         private readonly ICityRepository _cityRepository;
-        private readonly Validation _validation;
+       
 
-        public CityLogic(ICityRepository cityRepository, IOptions<Validation> configuration)
+        public CityLogic(ICityRepository cityRepository, configuration)
         {
             _cityRepository = cityRepository;
-            _validation = configuration.Value;
+            
         }
 
         private void ValidateYear(int year)
@@ -36,10 +36,7 @@ namespace WebAppCity.Logic
                 throw new UserErrorMessage("Year must be a 4-digit number!");
             }
 
-            if (!Regex.IsMatch(year.ToString(), _validation.YearRegex))
-            {
-                throw new UserErrorMessage("Invalid year format! Year must begin with either number 1 or number 2!");
-            }
+           
         }
 
         private void ValidateCountry(string? country)
@@ -49,15 +46,12 @@ namespace WebAppCity.Logic
                 throw new UserErrorMessage("Field can't be empty!");
             }
 
-            if (country.Length > _validation.CountryMaxCharacters)
+            if (country.Length > 23)
             {
                 throw new UserErrorMessage("Exceeded maximum number of characters!");
             }
 
-            if (!Regex.IsMatch(country, _validation.CountryRegex))
-            {
-                throw new UserErrorMessage("Invalid country format! Format must include only letters! First letter must be capital!");
-            }
+           
         }
 
         private void ValidatePopulation(int population)
@@ -72,10 +66,7 @@ namespace WebAppCity.Logic
                 throw new UserErrorMessage("Capacity must be more then 5000!");
             }
 
-            if (!Regex.IsMatch(population.ToString(), _validation.PopulationRegex))
-            {
-                throw new UserErrorMessage("Invalid population format! Format must include only positive numbers!");
-            }
+           
         }
 
         private void ValidateMayor(string? mayor)
@@ -90,10 +81,7 @@ namespace WebAppCity.Logic
                 throw new UserErrorMessage("Exceeded maximum number of characters!");
             }
 
-            if (!Regex.IsMatch(mayor, _validation.mayorRegex))
-            {
-                throw new UserErrorMessage("Invalid mayor format. Format must include only letters! First letter must be mayor!");
-            }
+           
         }
         public void CreateNewCity(City? city)
         {
